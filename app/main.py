@@ -30,6 +30,27 @@ def root():
         "status": "live"
     }
 
+@app.get("/predict")
+def predict_get(
+    sepal_length: float,
+    sepal_width: float,
+    petal_length: float,
+    petal_width: float
+):
+    try:
+        features = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
+        prediction = model.predict(features)[0]
+        probabilities = model.predict_proba(features)[0]
+        confidence = float(probabilities[prediction])
+        return PredictionOutput(
+            species=CLASS_NAMES[prediction],
+            species_id=int(prediction),
+            confidence=round(confidence, 4)
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "iris_model.pkl")
 
 with open(MODEL_PATH, "rb") as f:
