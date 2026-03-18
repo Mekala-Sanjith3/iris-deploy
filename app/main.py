@@ -6,6 +6,30 @@ import os
 
 app = FastAPI()
 
+@app.get("/")
+def root():
+    return {
+        "message": "Welcome to the Iris Classifier API",
+        "version": "1.0.0",
+        "endpoints": {
+            "health": "/health",
+            "predict": "/predict",
+            "docs": "/docs"
+        },
+        "example_request": {
+            "url": "/predict",
+            "method": "POST",
+            "body": {
+                "sepal_length": 5.1,
+                "sepal_width": 3.5,
+                "petal_length": 1.4,
+                "petal_width": 0.2
+            }
+        },
+        "deployed_on": "Render",
+        "status": "live"
+    }
+
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "iris_model.pkl")
 
 with open(MODEL_PATH, "rb") as f:
